@@ -2,7 +2,7 @@
 
 This is a little utility which I am using to format my timesheets.
 
-I'm using [toggl](toggl.com) time tracker to keep records of hours spent working for my client.
+I'm using [toggl](https://toggl.com) time tracker to keep records of hours spent working for my client.
 
 On the first days of each month, I download a 'Detailed report' from toggl, and convert it to the format my client accepts.
 
