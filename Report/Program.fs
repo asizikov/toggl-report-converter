@@ -18,7 +18,8 @@ let readFile path =
     if not <| File.Exists path then
         printfn "Input file does not exists. %s" path
         None
-        else Some(File.ReadAllLines path)
+    else
+        Some(File.ReadAllLines path)
 
 let writeFile dir data =
     if Directory.Exists dir then
