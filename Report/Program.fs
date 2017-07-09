@@ -12,13 +12,27 @@ let toDayOfMonth (x:DateTime) = x.Day
 let toTaskSet (r:seq<Record>) = r |> Seq.map (fun s -> s.Task) |> Set.ofSeq
 let toRecord (input:array<String>) = {Task = input.[5]; Date = toDate input.[7]}
 let toCsvLine i = sprintf "%d, \"%s\"" i.DayOfMonth (i.Tasks |> String.concat ", ")
-let fileName dir =  sprintf "%s/%s.csv" dir (DateTime.Now.AddMonths(-1).ToString("Y"))
+let fileName dir = sprintf "%s/%s.csv" dir (DateTime.Now.AddMonths(-1).ToString("Y"))
+
+let readFile path =
+    if not <| File.Exists path then
+        printfn "Input file does not exists. %s" path
+        None
+        else Some(File.ReadAllLines path)
+
+let writeFile dir data =
+    if Directory.Exists dir then
+        File.WriteAllLines(fileName dir, data) |> ignore
+    else
+        printf "Failed to find output directory %s" dir
 
 [<EntryPoint>]
-let main argv = 
+let main argv =
     let input = argv.[0]
 
-    let records = readLines input
+    match readFile input with
+    | None -> Console.ReadKey |> ignore
+    | Some lines -> lines
                      |> Seq.skip 1
                      |> Seq.map split
                      |> Seq.map toRecord
@@ -26,6 +40,8 @@ let main argv =
                      |> Seq.sortBy fst
                      |> Seq.map(fun gr -> {DayOfMonth = toDayOfMonth(fst gr); Tasks = toTaskSet(snd gr)} )
                      |> Seq.map toCsvLine
-    File.WriteAllLines(fileName argv.[1], records)
+                     |> Seq.toArray
+                     |> fun data -> writeFile argv.[1] data
+
     Console.ReadKey() |> ignore;
     0
