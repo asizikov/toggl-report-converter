@@ -9,6 +9,7 @@ let split (input:string) = input.Split(',')
 let toDate x = DateTime.Parse x
 let toDayOfMonth (x:DateTime) = x.Day
 
+
 let toTaskSet (r:seq<Record>) = r |> Seq.map (fun s -> s.Task) |> Set.ofSeq
 let toRecord (input:array<String>) = {Task = input.[5]; Date = toDate input.[7]}
 let toCsvLine i = sprintf "%d, \"%s\"" i.DayOfMonth (i.Tasks |> String.concat ", ")
@@ -30,7 +31,7 @@ let writeFile dir data =
 [<EntryPoint>]
 let main argv =
     let input = argv.[0]
-
+    let out = argv.[1]
     match readFile input with
     | None -> Console.ReadKey |> ignore
     | Some lines -> lines
@@ -42,7 +43,7 @@ let main argv =
                      |> Seq.map(fun gr -> {DayOfMonth = toDayOfMonth(fst gr); Tasks = toTaskSet(snd gr)} )
                      |> Seq.map toCsvLine
                      |> Seq.toArray
-                     |> fun data -> writeFile argv.[1] data
-
+                     |> fun data -> writeFile out data
+    printfn "Report Completed"
     Console.ReadKey() |> ignore;
     0
