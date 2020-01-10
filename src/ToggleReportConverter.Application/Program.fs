@@ -17,7 +17,7 @@ let fileName dir = sprintf "%s/%s.csv" dir (DateTime.Now.AddMonths(-1).ToString(
 
 let readFile path =
     if not <| File.Exists path then
-        printfn "Input file does not exists. %s" path
+        printfn "Input file does not exist. %s" path
         None
     else
         Some(readLines path)
